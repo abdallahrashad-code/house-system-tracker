@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Year 9: Python Loops</title>
+    <style>
+        /* --- General Styling --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); /* Matrix/Cyberpunk Vibe */
+            overflow: hidden;
+            color: #e0e0e0;
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 80px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* --- Typography --- */
+        h1 {
+            font-size: 4.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            animation: slideInDown 0.8s ease;
+            text-align: center;
+            color: #00fff0;
+        }
+
+        h2 {
+            font-size: 3em;
+            margin-bottom: 30px;
+            color: #ff0099; /* Neon Pink */
+            text-shadow: 0 0 10px rgba(255, 0, 153, 0.3);
+            animation: slideInDown 0.8s ease;
+            text-align: center;
+            border-bottom: 3px solid rgba(255, 0, 153, 0.5);
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 2em;
+            margin-bottom: 15px;
+            color: #bd93f9;
+        }
+
+        p, li {
+            font-size: 1.5em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            max-width: 1100px;
+        }
+
+        /* --- Code Blocks --- */
+        .code-block {
+            background: #1e1e1e;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 1.3em;
+            box-shadow: 0 0 20px rgba(0, 255, 240, 0.1);
+            border-left: 5px solid #00fff0;
+            text-align: left;
+            width: 100%;
+            max-width: 950px;
+            position: relative;
+            transition: transform 0.2s;
+        }
+        
+        .code-block:hover {
+            transform: scale(1.01);
+            box-shadow: 0 0 30px rgba(0, 255, 240, 0.2);
+        }
+
+        .keyword { color: #ff79c6; font-weight: bold; } /* Pink */
+        .string { color: #f1fa8c; } /* Yellow */
+        .number { color: #bd93f9; } /* Purple */
+        .comment { color: #6272a4; font-style: italic; } /* Grey-Blue */
+        .func { color: #8be9fd; } /* Cyan */
+
+        /* --- Interactive Components --- */
+        .highlight-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #bd93f9;
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            margin: 20px 0;
+            max-width: 950px;
+            width: 100%;
+            text-align: left;
+        }
+
+        .teacher-note {
+            background: rgba(255, 184, 108, 0.1);
+            border: 2px dashed #ffb86c;
+            padding: 15px 30px;
+            border-radius: 50px;
+            margin-top: 30px;
+            font-size: 1.2em;
+            color: #ffb86c;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .teacher-note::before {
+            content: "💡";
+            font-size: 1.5em;
+        }
+
+        /* --- Author Badge Styling --- */
+        .author-badge {
+            margin-top: 40px;
+            padding: 10px 30px;
+            background: rgba(0, 255, 240, 0.1);
+            border: 1px solid #00fff0;
+            border-radius: 50px;
+            color: #00fff0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(0, 255, 240, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: pulse 3s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 15px rgba(0, 255, 240, 0.3); }
+            50% { box-shadow: 0 0 25px rgba(0, 255, 240, 0.6); }
+            100% { box-shadow: 0 0 15px rgba(0, 255, 240, 0.3); }
+        }
+
+        /* --- Grid & Cards --- */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            background: rgba(0, 0, 0, 0.5);
+            border-color: #00fff0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            width: 100%;
+            max-width: 1300px;
+        }
+
+        /* --- Reveal Button --- */
+        .reveal-container {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .reveal-content {
+            filter: blur(12px);
+            transition: filter 0.5s;
+        }
+        
+        .reveal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .reveal-btn {
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #ff0099, #493240);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.3em;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
+        }
+        
+        .reveal-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .reveal-container.revealed .reveal-content {
+            filter: blur(0);
+        }
+        
+        .reveal-container.revealed .reveal-overlay {
+            display: none;
+        }
+
+        /* --- Navigation --- */
+        .slide-counter {
+            position: fixed;
+            top: 25px;
+            right: 35px;
+            font-size: 1.4em;
+            background: rgba(0,0,0,0.6);
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 1px solid #555;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 35px;
+            right: 35px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #00fff0;
+            color: #00fff0;
+            padding: 12px 30px;
+            font-size: 1.2em;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+            backdrop-filter: blur(5px);
+            font-weight: bold;
+        }
+
+        .nav-btn:hover {
+            background: #00fff0;
+            color: #0f2027;
+        }
+
+        /* --- Animations --- */
+        @keyframes slideInDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">16</span>
+    </div>
+
+    <div class="slide-container">
+
+        <!-- Slide 1: Digital Citizenship (Safety First) -->
+        <div class="slide active">
+            <h1>🛡️ Digital Citizenship</h1>
+            <h2>Be a Cyber-Hero, Not a Villain</h2>
+            
+            <div class="grid-3" style="margin-top: 30px;">
+                <div class="card" style="border-top: 5px solid #ff4757;">
+                    <h3>🔐 Digital Footprint</h3>
+                    <p>Everything you post leaves a trail. Would you want your grandma to see it?</p>
+                </div>
+                <div class="card" style="border-top: 5px solid #2ed573;">
+                    <h3>🧠 Critical Thinking</h3>
+                    <p>Not everything online is true. Fact-check before you share!</p>
+                </div>
+                <div class="card" style="border-top: 5px solid #ffa502;">
+                    <h3>🚫 Cyberbullying</h3>
+                    <p>Behind every screen is a real person. Be kind and report hate.</p>
+                </div>
+            </div>
+
+            <div class="highlight-box" style="margin-top: 40px; text-align: center; border-color: #00fff0;">
+                <p><strong>Rule of Thumb:</strong> If you wouldn't say it to their face, don't type it.</p>
+            </div>
+
+            <!-- Author Badge -->
+            <div class="author-badge">
+                <span>⚡ System Architect: Mr. Abdallah Rashad | ICT Teacher</span>
+            </div>
+        </div>
+
+        <!-- Slide 2: Title Slide -->
+        <div class="slide">
+            <h1>🐍 Python: Advanced Loops</h1>
+            <h2>Count-Controlled Iteration</h2>
+            <p style="font-size: 1.5em; color: #00fff0;">Year 9 ICT | Week 11</p>
+            <div style="margin-top: 50px; font-size: 5em;">🔁 💻</div>
+            <p style="margin-top: 20px; opacity: 0.8;">"Mastering the range() function"</p>
+        </div>
+
+        <!-- Slide 3: Learning Objectives -->
+        <div class="slide">
+            <h2>🎯 Mission Objectives</h2>
+            <div class="highlight-box" style="border-left: 5px solid #ff0099;">
+                <ul>
+                    <li>✅ <strong>Explain</strong> the purpose of a count-controlled loop.</li>
+                    <li>✅ <strong>Identify</strong> the two types of `range()` loops.</li>
+                    <li>✅ <strong>Predict</strong> the output of loop programs.</li>
+                    <li>✅ <strong>Modify</strong> algorithms to solve new problems.</li>
+                </ul>
+            </div>
+            <div class="teacher-note">
+                Focus on the difference between `range(stop)` and `range(start, stop, step)`.
+            </div>
+        </div>
+
+        <!-- Slide 4: ENGAGE - Prediction Game -->
+        <div class="slide">
+            <h2>🔮 The Prediction Game</h2>
+            <p>Look at this code. If the user inputs <strong>5</strong>, what happens?</p>
+            
+            <div class="code-block">
+                <code>
+quantity = <span class="func">int</span>(<span class="func">input</span>(<span class="string">"How many numbers? "</span>))<br><br>
+<span class="keyword">for</span> counter <span class="keyword">in</span> <span class="func">range</span>(quantity):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">print</span>(counter + <span class="number">1</span>)
+                </code>
+            </div>
+
+            <div class="reveal-container" id="rev1" onclick="reveal('rev1')">
+                <div class="reveal-content highlight-box" style="text-align: center; border-color: #2ed573;">
+                    <h3 style="color: #2ed573;">Output:</h3>
+                    <p style="font-family: monospace; font-size: 1.5em;">1, 2, 3, 4, 5</p>
+                </div>
+                <div class="reveal-overlay">
+                    <button class="reveal-btn">Click to Reveal Output</button>
+                </div>
+            </div>
+
+            <div class="teacher-note">
+                Ask: "Why did we need `counter + 1`? What does `range()` start at by default?"
+            </div>
+        </div>
+
+        <!-- Slide 5: EXPLAIN - Zero-Based Indexing -->
+        <div class="slide">
+            <h2>0️⃣ The Power of Zero</h2>
+            <p>Python starts counting at <strong>0</strong>, not 1!</p>
+            
+            <div class="two-column" style="margin-top: 30px;">
+                <div class="card">
+                    <h3>range(5)</h3>
+                    <p>Starts at 0</p>
+                    <p>Ends BEFORE 5</p>
+                    <div class="code-block" style="text-align: center; margin: 10px auto; padding: 10px;">
+                        <code>0, 1, 2, 3, 4</code>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Result</h3>
+                    <p>It runs 5 times.</p>
+                    <p>But the numbers are 0-4.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: EXPLORE - Task 1.21 -->
+        <div class="slide">
+            <h2>🕵️ Task 1.21: The Range Mystery</h2>
+            <p>We want to count numbers <strong>between</strong> a start and end value.</p>
+            
+            <div class="code-block">
+                <code>
+start = <span class="func">int</span>(<span class="func">input</span>(<span class="string">"Start: "</span>)) <span class="comment"># e.g., 1</span><br>
+end = <span class="func">int</span>(<span class="func">input</span>(<span class="string">"End: "</span>))   <span class="comment"># e.g., 10</span><br>
+quantity = <span class="number">0</span><br><br>
+<span class="keyword">for</span> counter <span class="keyword">in</span> <span class="func">range</span>(start, end + <span class="number">1</span>):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;quantity = quantity + <span class="number">1</span><br><br>
+<span class="func">print</span>(<span class="string">"There were"</span>, quantity, <span class="string">"numbers"</span>)
+                </code>
+            </div>
+        </div>
+
+        <!-- Slide 7: INVESTIGATE - The "+1" Question -->
+        <div class="slide">
+            <h2>❓ Why `end + 1`?</h2>
+            <p>In the previous code: <code>range(start, end + 1)</code></p>
+            <p>Why did we add +1 to the end variable?</p>
+            
+            <div class="reveal-container" id="rev2" onclick="reveal('rev2')" style="margin-top: 40px;">
+                <div class="reveal-content card" style="background: rgba(0, 255, 240, 0.1); border: 2px solid #00fff0;">
+                    <h3>💡 The Answer</h3>
+                    <p>Because `range()` <strong>STOPS</strong> before the second number.</p>
+                    <p>If we want to include the number 10, we must tell `range` to stop at 11.</p>
+                </div>
+                <div class="reveal-overlay">
+                    <button class="reveal-btn">Reveal The Secret</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: MODIFY - Exclude the Boundaries -->
+        <div class="slide">
+            <h2>🛠️ Modify Challenge</h2>
+            <p><strong>Goal:</strong> Change the algorithm so it does <strong>NOT</strong> include the start or end numbers.</p>
+            <p style="font-size: 1.2em; opacity: 0.8;">Example: If I enter 1 and 5, I only want to count 2, 3, 4.</p>
+            
+            <div class="code-block">
+                <code>
+<span class="comment"># Original: range(start, end + 1)</span><br><br>
+<span class="comment"># Modified:</span><br>
+<span class="keyword">for</span> counter <span class="keyword">in</span> <span class="func">range</span>(start + <span class="number">1</span>, end):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;quantity = quantity + <span class="number">1</span>
+                </code>
+            </div>
+        </div>
+
+        <!-- Slide 9: EXPLAIN - Syntax Breakdown -->
+        <div class="slide">
+            <h2>📘 Syntax: Two Types of Range</h2>
+            <div class="two-column">
+                <div class="card" style="border-color: #ff0099;">
+                    <h3>Type 1: Simple</h3>
+                    <p><code>range(stop)</code></p>
+                    <p>Starts at 0. Stops before 'stop'. Step is 1.</p>
+                    <p class="code-block" style="text-align: center; padding: 10px; margin: 10px;">range(5)</p>
+                </div>
+                <div class="card" style="border-color: #00fff0;">
+                    <h3>Type 2: Custom</h3>
+                    <p><code>range(start, stop, step)</code></p>
+                    <p>Control everything!</p>
+                    <p class="code-block" style="text-align: center; padding: 10px; margin: 10px;">range(1, 10, 2)</p>
+                </div>
+            </div>
+            <div class="teacher-note">
+                Use Unplugged Activity 1.7: Have students write a loop for a partner to act out (e.g., "Shout output 0, 1, 2").
+            </div>
+        </div>
+
+        <!-- Slide 10: ELABORATE - Task 1.22 -->
+        <div class="slide">
+            <h2>🏆 Task 1.22: Highest Score</h2>
+            <p>Find the highest score in the class.</p>
+            <div class="code-block" style="font-size: 1em;">
+                <code>
+highestScore = <span class="number">0</span><br>
+highestLearner = <span class="number">0</span><br><br>
+<span class="keyword">for</span> learner <span class="keyword">in</span> <span class="func">range</span>(<span class="number">0</span>, numberOfLearners):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;score = <span class="func">int</span>(<span class="func">input</span>(<span class="string">"Enter score: "</span>))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> score > highestScore:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;highestScore = score<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;highestLearner = learner + <span class="number">1</span> <span class="comment"># Fix index!</span>
+                </code>
+            </div>
+            
+            <div class="highlight-box">
+                <p><strong>Question:</strong> Why <code>learner + 1</code>?</p>
+                <p><strong>Answer:</strong> To convert computer counting (0, 1, 2) to human counting (Student 1, Student 2, Student 3).</p>
+            </div>
+        </div>
+
+        <!-- Slide 11: CHALLENGE - Lowest Score -->
+        <div class="slide">
+            <h2>🚀 Challenge Mode: Lowest Score</h2>
+            <p>How do we modify the code to find the <strong>Lowest</strong> score too?</p>
+            
+            <div class="reveal-container" id="rev3" onclick="reveal('rev3')">
+                <div class="reveal-content code-block" style="border-left-color: #ff0099;">
+                    <code>
+<span class="comment"># 1. Initialize with a high number</span><br>
+lowestScore = <span class="number">1000</span> <br><br>
+<span class="comment"># 2. Add check inside loop</span><br>
+<span class="keyword">if</span> score < lowestScore:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;lowestScore = score
+                    </code>
+                </div>
+                <div class="reveal-overlay">
+                    <button class="reveal-btn">Show Solution</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: EVALUATE - Exit Ticket -->
+        <div class="slide">
+            <h2>🎟️ Exit Ticket: Quiz</h2>
+            
+            <div class="grid-3">
+                <div class="card">
+                    <h3>Question 1</h3>
+                    <p>What does <code>range(35)</code> start at?</p>
+                    <div class="reveal-container" id="q1" onclick="reveal('q1')">
+                        <div class="reveal-content"><h3 style="color:#00fff0">0</h3></div>
+                        <div class="reveal-overlay"><button class="reveal-btn">?</button></div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>Question 2</h3>
+                    <p>What is the last number in <code>range(1, 5)</code>?</p>
+                    <div class="reveal-container" id="q2" onclick="reveal('q2')">
+                        <div class="reveal-content"><h3 style="color:#00fff0">4</h3></div>
+                        <div class="reveal-overlay"><button class="reveal-btn">?</button></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Question 3</h3>
+                    <p>Output of <code>range(1, 10)</code> print <code>count * 2</code>?</p>
+                    <div class="reveal-container" id="q3" onclick="reveal('q3')">
+                        <div class="reveal-content"><p style="font-size:0.8em">2, 4, 6, 8, 10, 12, 14, 16, 18</p></div>
+                        <div class="reveal-overlay"><button class="reveal-btn">?</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Activity Details (Teacher Only) -->
+        <div class="slide">
+            <h2>🏃 Unplugged Activity 1.7</h2>
+            <p>Get up and move!</p>
+            <div class="two-column">
+                <div class="highlight-box">
+                    <h3>Role A: Programmer</h3>
+                    <p>Write a loop on paper. <br>E.g., <code>for i in range(3): clap()</code></p>
+                </div>
+                <div class="highlight-box">
+                    <h3>Role B: Computer</h3>
+                    <p>Execute the code EXACTLY.<br>Clap (0), Clap (1), Clap (2).</p>
+                </div>
+            </div>
+            <div class="teacher-note">
+                Ensure "Computer" students shout out the counter value (0, 1, 2) while doing the action to reinforce 0-indexing.
+            </div>
+        </div>
+
+        <!-- Slide 14: MAKE Challenge -->
+        <div class="slide">
+            <h2>🛠️ "Make" Challenge</h2>
+            <div class="card" style="width: 100%; max-width: 800px; padding: 40px;">
+                <h3>The Shopping Cart 🛒</h3>
+                <p>Create a program that tracks the <strong>total cost</strong> of purchased items.</p>
+                <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
+                <p style="color: #00fff0;"><strong>Bonus:</strong> Output the cost of the item they purchased the <em>most</em> of.</p>
+            </div>
+        </div>
+
+        <!-- Slide 15: Differentiation -->
+        <div class="slide">
+            <h2>🤝 Support & Challenge</h2>
+            <div class="two-column">
+                <div class="highlight-box" style="border-color: #2ed573;">
+                    <h3>🆘 Support</h3>
+                    <p>Pair with a peer mentor.</p>
+                    <p>Focus on Unplugged Activity 1.7 first.</p>
+                    <p>Use pre-written code skeletons.</p>
+                </div>
+                <div class="highlight-box" style="border-color: #ff4757;">
+                    <h3>🔥 Challenge</h3>
+                    <p>Complete the "Make" challenge.</p>
+                    <p>Modify Task 1.22 to find the Lowest Score.</p>
+                    <p>Use <code>elif</code> for complex grade boundaries.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Summary -->
+        <div class="slide">
+            <h1>✅ Lesson Complete</h1>
+            <h2>You are a Loop Legend!</h2>
+            <div class="grid-3" style="margin-top: 50px;">
+                <div class="card">
+                    <h3>Range(x)</h3>
+                    <p>0 to x-1</p>
+                </div>
+                <div class="card">
+                    <h3>Range(start, stop)</h3>
+                    <p>start to stop-1</p>
+                </div>
+                <div class="card">
+                    <h3>Count-Controlled</h3>
+                    <p>Repeating specific times</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="navigation">
+        <button class="nav-btn" onclick="changeSlide(-1)">◀ Prev</button>
+        <button class="nav-btn" onclick="changeSlide(1)">Next ▶</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlidesSpan = document.getElementById('total-slides');
+        const currentSlideSpan = document.getElementById('current-slide');
+
+        totalSlidesSpan.textContent = slides.length;
+
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlideSpan.textContent = index + 1;
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 0) currentSlide = 0;
+            if (currentSlide >= slides.length) currentSlide = slides.length - 1;
+            showSlide(currentSlide);
+        }
+
+        function reveal(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.add('revealed');
+            }
+        }
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+        });
+    </script>
+</body>
+</html>
